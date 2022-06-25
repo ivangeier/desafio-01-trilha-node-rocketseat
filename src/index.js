@@ -100,7 +100,18 @@ app.patch("/todos/:id/done", checksExistsUserAccount, (request, response) => {
 });
 
 app.delete("/todos/:id", checksExistsUserAccount, (request, response) => {
-  // Complete aqui
+  const { user } = request;
+  const { id } = request.params;
+
+  const todoIndex = user.todo.findIndex((todo) => todo.id == id);
+
+  if (todoIndex < 0) {
+    return response.status(400).json({ error: "TODO ID not found!" });
+  }
+
+  user.todo.splice(todoIndex, 1);
+
+  return response.status(200).json(user.todo);
 });
 
 module.exports = app;
